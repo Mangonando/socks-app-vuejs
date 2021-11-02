@@ -1,4 +1,24 @@
+Vue.component("product-details", {
+  props: {
+    details: {
+      type: Array,
+      required: true,
+    },
+  },
+  template: `
+  <ul>
+    <li v-for="detail in details">{{ detail }}</li>
+  </ul>
+`,
+});
+
 Vue.component("product", {
+  props: {
+    premium: {
+      type: Boolean,
+      required: true,
+    },
+  },
   template: `
   <div>
     <div class="product"></div>
@@ -9,10 +29,9 @@ Vue.component("product", {
       <h1>{{ title }}</h1>
       <p v-if="inStock">In Stock</p>
       <p v-else :class="{ outOfStock: !inStock }">Out of Stock</p>
+      <p>Shipping: {{ shipping }}</p>
       <p>{{ sale }}</p>
-      <ul>
-        <li v-for="detail in details">{{ detail }}</li>
-      </ul>
+      <product-details :details="details"></product-details>
       <div
         v-for="(variant, index) in variants"
         :key="variant.variantId"
@@ -30,13 +49,9 @@ Vue.component("product", {
       >
         Add to Cart
       </button>
-      <button @click="decreaseFromCart">Decrease from Cart</button>
-      <div class="cart">
-        <p>Cart({{ cart }})</p>
-      </div>
+      <button @click="removeFromCart">Remove from Cart</button>
     </div>
   </div>
-  
   `,
   data() {
     return {
@@ -63,16 +78,15 @@ Vue.component("product", {
         },
       ],
       sizes: ["S", "M", "L", "XL", "XXL", "XXXL"],
-      cart: 0,
       onSale: true,
     };
   },
   methods: {
     addToCart() {
-      this.cart += 1;
+      this.$emit("add-to-cart", this.variants[this.selectedVariant].variantId);
     },
-    decreaseFromCart() {
-      this.cart -= 1;
+    removeFromCart() {
+      this.$emit("remove-from-cart", this.variants[this.selectedVariant].variantId);
     },
     updateProduct(index) {
       this.selectedVariant = index;
@@ -90,6 +104,9 @@ Vue.component("product", {
     inStock() {
       return this.variants[this.selectedVariant].variantQuantity;
     },
+    shipping() {
+      return this.premium ? "Free" : "2.99 EUR";
+    },
     sale() {
       return this.onSale
         ? this.brand + " " + this.product + " are now on sale!"
@@ -100,4 +117,20 @@ Vue.component("product", {
 
 var app = new Vue({
   el: "#app",
+  data: {
+    premium: true,
+    cart: [],
+  },
+  methods: {
+    updateCart(id) {
+      this.cart.push(id);
+    },
+    removeItem(id) {
+      for (let i = this.cart.length - 1; i >= 0; i--) {
+        if (this.cart[i] === id) {
+          this.cart.splice(i, 1);
+        }
+      }
+    },
+  },
 });
