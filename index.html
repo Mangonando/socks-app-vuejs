@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Product App</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <div class="nav-bar"></div>
+    <div id="app">
+      <div class="product"></div>
+      <div class="product-image">
+        <img :src="image" alt="" />
+      </div>
+      <div class="product-info">
+        <h1>{{ title }}</h1>
+        <p v-if="inStock">In Stock</p>
+        <p v-else :class="{ outOfStock: !inStock }">Out of Stock</p>
+        <!-- <p :class="{ text-decoration: line-through }">Out of Stock</p> -->
+        <!-- <p>A pair of warm, fuzzy {{ product }}</p> -->
+        <!-- <p v-if="inventory > 10">In Stock</p>
+        <p v-else-if="inventory <= 10 && inventory > 0 ">Almost sold out!</p>
+        <p v-else>Out of Stock</p> -->
+        <p>{{ sale }}</p>
+        <ul>
+          <li v-for="detail in details">{{ detail }}</li>
+        </ul>
+        <div
+          v-for="(variant, index) in variants"
+          :key="variant.variantId"
+          class="color-box"
+          :style="{ backgroundColor: variant.variantColor }"
+          @mouseover="updateProduct(index)"
+        ></div>
+        <ul>
+          <li v-for="size in sizes">{{ size }}</li>
+        </ul>
+        <button
+          @click="addToCart"
+          :disabled="!inStock"
+          :class="{ disabledButton: !inStock }"
+        >
+          Add to Cart
+        </button>
+        <button @click="decreaseFromCart">Decrease from Cart</button>
+        <div class="cart">
+          <p>Cart({{ cart }})</p>
+        </div>
+        <!-- <a :href="link">Check some cool {{ product }}</a> -->
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
