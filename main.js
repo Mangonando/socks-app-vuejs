@@ -1,3 +1,14 @@
+Vue.component("product-review", {
+  template: `
+  <input>
+  `,
+  data() {
+    return {
+      name: null,
+    };
+  },
+});
+
 Vue.component("product-details", {
   props: {
     details: {
@@ -86,7 +97,10 @@ Vue.component("product", {
       this.$emit("add-to-cart", this.variants[this.selectedVariant].variantId);
     },
     removeFromCart() {
-      this.$emit("remove-from-cart", this.variants[this.selectedVariant].variantId);
+      this.$emit(
+        "remove-from-cart",
+        this.variants[this.selectedVariant].variantId
+      );
     },
     updateProduct(index) {
       this.selectedVariant = index;
